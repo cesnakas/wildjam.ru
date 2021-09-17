@@ -1,6 +1,22 @@
+### PhpStorm ###
 .idea/
 
+### Node ###
+node_modules/
+jspm_packages/
+bower_components/
+
+### Sass ###
 .sass-cache/
 *.css.map
 *.sass.map
 *.scss.map
+
+### macOS ###
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+
+### Windows ###
+Thumbs.db
