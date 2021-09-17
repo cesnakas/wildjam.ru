@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en">
+<html lang="ru">
 <head>
 
     <meta charset="UTF-8">
@@ -19,15 +19,106 @@
 </head>
 <body>
 
-    <header>
+    <header class="navigation">
+        <div class="container">
     
-        <!-- Header content -->
+            <a class="navigation__brand" href="/">
+                <img src="dist/images/logo.png" alt="">
+            </a>
     
+            <nav class="navigation__menu" role="navigation">
+                <a href="">Блогеры</a>
+                <a href="">Кейсы</a>
+                <a href="">exit agency</a>
+                <a href="">Контакты</a>
+            </nav>
+            
+            <div class="navigation__lang">
+                <a href="">en</a> / <a href="">ru</a>
+            </div>
+    
+        </div>
     </header>
     
     <main role="main">
     
-        <!-- Content -->
+        <nav class="breadcrumb">
+            <div class="container">
+    
+                <ul class="breadcrumb__list">
+                    <li class="breadcrumb__item">
+                        <a href="">Главная</a>
+                    </li>
+                    <li class="breadcrumb__item">
+                        <span>Блогеры</span>
+                    </li>
+                </ul>
+    
+            </div>
+        </nav>
+    
+        <section class="bloggers">
+            <div class="container">
+    
+                <h1 class="heading-h1">Блогеры</h1>
+    
+                <div class="filter">
+                    
+                    <span class="filter__text">Сортировать по:</span>
+    
+                    <select class="filter__form-select" name="">
+                        <option value="">выберете площадку</option>
+                        <option value="">выберете площадку</option>
+                        <option value="">выберете площадку</option>
+                        <option value="">выберете площадку</option>
+                    </select>
+    
+                    <select class="filter__form-select" name="" id="">
+                        <option value="">выберете направление</option>
+                    </select>
+                    
+                </div>
+    
+                <div class="row">
+    
+                    <div class="col">
+                        <div class="bloggers__card">
+                            <img class="bloggers__img" src="dist/images/img-01.png" alt="">
+                            <div class="bloggers__card-body">
+                                <div class="">Макс Максимов</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="bloggers__card">
+                            <img class="bloggers__img" src="dist/images/img-01.png" alt="">
+                            <div class="bloggers__card-body">
+    
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="bloggers__card">
+                            <img class="bloggers__img" src="dist/images/img-01.png" alt="">
+                            <div class="bloggers__card-body">
+    
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="bloggers__card">
+                            <img class="bloggers__img" src="dist/images/img-01.png" alt="">
+                            <div class="bloggers__card-body">
+    
+                            </div>
+                        </div>
+                    </div>
+    
+                </div>
+    
+            </div>
+        </section>
+    
     
     </main>
     

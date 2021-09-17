@@ -1,0 +1,16 @@
+.filter {
+    margin-bottom: 50px;
+
+    &__text {
+        font-weight: 600;
+        font-size: 20px;
+        line-height: 1.2;
+    }
+
+    &__form-select {
+        margin-left: 40px;
+        font-size: 16px;
+        font-weight: 500;
+        line-height: 20px;
+    }
+}

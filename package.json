@@ -41,5 +41,8 @@
         "panini": "^1.7.1",
         "sass": "^1.37.5",
         "webpack-stream": "^6.1.2"
+    },
+    "dependencies": {
+        "bootstrap": "^5.1.1"
     }
 }

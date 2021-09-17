@@ -62,7 +62,7 @@ const styles = () => {
 // ========== Scripts ==========
 const scripts = () => {
     return src([
-        // 'node_modules/...',
+        'node_modules/bootstrap/dist/js/bootstrap.bundle.js',
         'app/js/main.js',
     ])
         .pipe(plumber())
