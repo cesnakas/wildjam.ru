@@ -6,7 +6,7 @@
     padding-right: 1rem;
 
     @media (min-width: 1200px) {
-        max-width: 1140px;
+        max-width: 1320px;
     }
 }
 
@@ -16,5 +16,14 @@
 }
 
 .col {
-    flex: 1 0 0%;
+    flex: 1 0 0;
+    padding-left: 10px;
+    padding-right: 10px;
+
+    &:first-child {
+        padding-left: 0;
+    }
+    &:last-child {
+        padding-right: 0;
+    }
 }
