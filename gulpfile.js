@@ -62,7 +62,8 @@ const styles = () => {
 // ========== Scripts ==========
 const scripts = () => {
     return src([
-        'node_modules/bootstrap/dist/js/bootstrap.bundle.js',
+        // 'node_modules/bootstrap/dist/js/bootstrap.bundle.js',
+        'node_modules/swiper/swiper-bundle.js',
         'app/js/main.js',
     ])
         .pipe(plumber())
