@@ -1,4 +1,5 @@
 .bloggers {
+    margin-bottom: 50px;
 
     .row:not(:last-child) {
         margin-bottom: 50px;
@@ -19,6 +20,9 @@
                 opacity: 0;
                 visibility: hidden;
             }
+            img {
+                transform: scale(1.1);
+            }
         }
 
         &-body {
@@ -31,6 +35,7 @@
             flex-direction: column;
             justify-content: flex-end;
             padding: 10px 12px;
+            color: #EFF3F5;
             background-color: rgba(189,28,159,.5);
             transition: .35s ease-in-out;
         }
@@ -63,6 +68,36 @@
     }
 
     &__img {
+        transition: .35s ease-in-out;
+    }
 
+    &__loader {
+        position: relative;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 100%;
+        padding-top: 50px;
+        padding-bottom: 50px;
+        font-weight: 300;
+        font-size: 15px;
+        line-height: 1.2;
+        text-align: center;
+        user-select: none;
+
+        &:before,
+        &:after {
+            content: '';
+            display: flex;
+            width: 100%;
+            height: 1px;
+            background-color: #EFF3F5;
+        }
+
+        &-content {
+            display: inline-block;
+            padding-left: 5%;
+            padding-right: 5%;
+        }
     }
 }
