@@ -1,0 +1,32 @@
+.footer {
+    min-height: 225px;
+    padding-top: 50px;
+    padding-bottom: 12px;
+    background: linear-gradient(180deg, rgba(110,16,94,0) 3.12%, #320029 100%);
+
+    &__brand {
+        display: inline-flex;
+
+        img {
+            width: 200px;
+            height: 200px;
+        }
+    }
+
+    &__nav {
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+        height: 100%;
+
+        &-link {
+            font-weight: 600;
+            font-size: 20px;
+            line-height: 1.2;
+
+            &:not(:first-child) {
+                margin-left: 50px;
+            }
+        }
+    }
+}
