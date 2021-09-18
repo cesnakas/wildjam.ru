@@ -1,34 +1,45 @@
+:root {
+    --swiper-navigation-size: 1rem;
+    --swiper-navigation-color: #fff;
+}
 .swiper {
     width: 100%;
     height: 100%;
-    overflow: inherit;
-    overflow-y: hidden;
+    //overflow: inherit;
+    //overflow-y: hidden;
     padding-bottom: 50px;
 
     &-slide {
-        text-align: center;
-        font-size: 18px;
-        background: #fff;
-        /* Center slide text vertically */
         display: flex;
         justify-content: center;
         align-items: center;
+        font-size: 18px;
+        text-align: center;
+        background: #fff;
     }
+}
+
+.swiper-button-prev {
+    left: 5px;
+}
+.swiper-button-next {
+    right: 5px;
 }
 
 .swiper-scrollbar {
     background: rgba(150,150,150,1);
 }
-.swiper-horizontal > .swiper-scrollbar {
+.swiper-scrollbar {
     left: 0;
     right: 0;
-    width: 310px;
+    //width: 310px;
+    width: 80%;
     height: 2px;
     margin-left: auto;
     margin-right: auto;
 }
 .swiper-scrollbar-drag {
+    top: -1px;
     height: 4px;
-    margin-top: -1px;
     background: #EFF3F5;
 }
