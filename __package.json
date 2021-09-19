@@ -1,6 +1,6 @@
 {
     "name": "gulp",
-    "version": "1.1.9",
+    "version": "1.1.2",
     "description": "Gulp build",
     "main": "gulpfile.js",
     "scripts": {
@@ -10,7 +10,7 @@
         "type": "git",
         "url": "git+https://github.com/cesnakas/GULP.git"
     },
-    "author": "Sergei ★ Česnakas",
+    "author": "Sergei Česnakas",
     "license": "MIT",
     "bugs": {
         "url": "https://github.com/cesnakas/GULP/issues"
