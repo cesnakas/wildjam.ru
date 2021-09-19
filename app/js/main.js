@@ -1,6 +1,8 @@
+// document.querySelector('#navMenu') {}
+
 const swiper = new Swiper ('.swiper', {
     breakpoints: {
-        576: {
+        320: {
             slidesPerView: 2,
             spaceBetween: 20
         },

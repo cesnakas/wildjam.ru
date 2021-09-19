@@ -7,6 +7,12 @@
         display: flex;
         justify-content: space-between;
         align-items: center;
+
+        @media (max-width: 767.98px) {
+            flex-wrap: wrap;
+            background-color: rgba(#6E105E,.5);
+            backdrop-filter: blur(4px);
+        }
     }
 
     &__brand {
@@ -18,21 +24,53 @@
         }
     }
 
+    #navMenu {
+        @media (min-width: 768px) {
+            display: none;
+        }
+    }
+
+    &__wrap {
+        display: contents;
+        width: 100%;
+
+        @media (max-width: 767.98px) {
+            display: none;
+            width: 100%;
+            text-align: center;
+        }
+    }
+
     &__menu {
+        @media (max-width: 767.98px) {
+            display: flex;
+            flex-direction: column;
+        }
 
         a {
             font-size: 20px;
             font-weight: 600;
             line-height: 24px;
 
+            @media (max-width: 767.98px) {
+                padding: .75rem 0;
+                text-align: center;
+            }
+
             & + a {
                 margin-left: 30px;
+
+                @media (max-width: 767.98px) {
+                    margin-left: 0;
+                }
             }
         }
     }
 
     &__lang {
-
+        @media (max-width: 767.98px) {
+            padding: .75rem 0;
+        }
     }
 }
 
