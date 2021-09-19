@@ -44,6 +44,7 @@
     },
     "dependencies": {
         "bootstrap": "^5.1.1",
+        "jquery": "^3.6.0",
         "swiper": "^7.0.6"
     }
 }

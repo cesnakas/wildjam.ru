@@ -20,7 +20,7 @@ const SITEMAP      = require('gulp-sitemap')
 const mode         = require('gulp-mode')({modes: ['prod', 'dev'], default: 'dev', verbose: false})
 const path         = require('path')
 //
-const webpack = require('webpack-stream')
+// const webpack = require('webpack-stream')
 //
 
 
@@ -62,7 +62,7 @@ const styles = () => {
 // ========== Scripts ==========
 const scripts = () => {
     return src([
-        // 'node_modules/bootstrap/dist/js/bootstrap.bundle.js',
+        'node_modules/jquery/dist/jquery.js',
         'node_modules/swiper/swiper-bundle.js',
         'app/js/main.js',
     ])
@@ -192,4 +192,6 @@ exports.webp    = webp
 exports.sitemap = sitemap
 exports.clean   = clean
 
-exports.default = series(clean, parallel(html, styles, scripts, fonts, images, svg, sprite), watchFiles)
+// exports.default = series(clean, parallel(html, styles, scripts, fonts, images, svg, sprite), watchFiles)
+// exports.default = series(clean, html, styles, scripts, fonts, images, svg, sprite, watchFiles)
+exports.default = series(clean, styles, scripts, fonts, images, svg, sprite, html, watchFiles)
