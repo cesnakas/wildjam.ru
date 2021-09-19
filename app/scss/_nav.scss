@@ -1,7 +1,13 @@
 // Navigation
 .navigation {
+    z-index: 999;
     height: 118px;
     user-select: none;
+
+    @media (max-width: 767.98px) {
+        height: auto;
+        background-color: #6E105E;
+    }
 
     .container {
         display: flex;
@@ -10,8 +16,6 @@
 
         @media (max-width: 767.98px) {
             flex-wrap: wrap;
-            background-color: rgba(#6E105E,.5);
-            backdrop-filter: blur(4px);
         }
     }
 
@@ -28,6 +32,11 @@
         @media (min-width: 768px) {
             display: none;
         }
+
+        span {
+            width: 30px;
+            height: 2px;
+        }
     }
 
     &__wrap {
@@ -35,7 +44,7 @@
         width: 100%;
 
         @media (max-width: 767.98px) {
-            //display: none;
+            display: none;
             width: 100%;
             text-align: center;
         }

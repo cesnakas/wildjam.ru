@@ -62,7 +62,8 @@ const styles = () => {
 // ========== Scripts ==========
 const scripts = () => {
     return src([
-        // 'node_modules/...',
+        'node_modules/jquery/dist/jquery.js',
+        'node_modules/swiper/swiper-bundle.js',
         'app/js/main.js',
     ])
         .pipe(plumber())
@@ -81,18 +82,21 @@ const scripts = () => {
 // ========== Images ==========
 const images = () => {
     return src('app/images/**/*.{png,jpg,jpeg,gif}')
-        .pipe(cache(imagemin([
+        .pipe(imagemin())
+        /*
+        .pipe(imagemin([
             imagemin.optipng({ optimizationLevel: 5 }),
             imagemin.mozjpeg({ quality: 75, progressive: true }),
             imagemin.gifsicle({ interlaced: true }),
-        ])))
+        ]))
+        */
         .pipe(dest('dist/images/'))
         .pipe(browserSync.stream())
 }
 // https://github.com/svg/svgo#built-in-plugins
 const svg = () => {
     return src('app/images/*.svg','!app/images/svg/*')
-        .pipe(cache(imagemin([
+        .pipe(imagemin([
             imagemin.svgo({
                 plugins: [
                     { removeViewBox: false },
@@ -101,13 +105,13 @@ const svg = () => {
                     { removeDimensions: true }
                 ]
             })
-        ])))
+        ]))
         .pipe(dest('dist/images/'))
         .pipe(browserSync.stream())
 }
 const sprite = () => {
     return src('app/images/symbols/*.svg')
-        .pipe(cache(imagemin([
+        .pipe(imagemin([
             imagemin.svgo({
                 plugins: [
                     { removeViewBox: false },
@@ -116,7 +120,7 @@ const sprite = () => {
                     { removeDimensions: true }
                 ]
             })
-        ])))
+        ]))
         .pipe(svgSymbols({
             id: '%f',
             templates: ['default-svg']
@@ -126,7 +130,7 @@ const sprite = () => {
 }
 const webp = () => {
     return src('app/images/**/*.{jpg,jpeg,png}')
-        .pipe(cache(WEBP()))
+        .pipe(WEBP())
         .pipe(dest('dist/images/'))
         .pipe(browserSync.stream())
 }
@@ -180,6 +184,7 @@ watch('app/images/symbols/*.svg', sprite)
 watch('app/images/**/*.webp', webp)
 
 // ========== Exports ==========
+exports.watchFiles = watchFiles
 exports.styles  = styles
 exports.scipts  = scripts
 exports.html    = html
