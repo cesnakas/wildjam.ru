@@ -1,72 +1,92 @@
-'use strict'
-const { src, dest, series, parallel, watch } = require('gulp')
-const gulp         = require('gulp');
-const browserSync  = require('browser-sync').create()
-const plumber      = require('gulp-plumber')
-const panini       = require('panini')
-const sourcemaps   = require('gulp-sourcemaps')
-const sass         = require('gulp-sass')(require('sass'))
+// 'use strict'
+const {src, dest, parallel} = require('gulp')
+const gulp = require('gulp')
+const del = require('del')
+const panini = require('panini')
+
+const sass = require('gulp-sass')(require('sass'))
+const sassGlob = require('gulp-sass-glob')
+
+const babel = require('gulp-babel')
+const concat = require('gulp-concat')
+const uglify = require('gulp-uglify')
+
+const imagemin = require('gulp-imagemin')
+const svgSymbols =require('gulp-svg-symbols')
 const autoprefixer = require('gulp-autoprefixer')
-const concat       = require('gulp-concat')
-const babel        = require('gulp-babel')
-const uglify       = require('gulp-uglify')
-const imagemin     = require('gulp-imagemin')
-const svgSymbols   = require('gulp-svg-symbols')
-const imageminWebp = require('imagemin-webp')
-const WEBP         = require('gulp-webp')
-const cache        = require('gulp-cache')
-const del          = require('del')
-const SITEMAP      = require('gulp-sitemap')
-const mode         = require('gulp-mode')({modes: ['prod', 'dev'], default: 'dev', verbose: false})
-const path         = require('path')
-//
-const webpack = require('webpack-stream')
-//
+const sourcemaps = require('gulp-sourcemaps')
+const mode = require('gulp-mode')({modes: ['prod', 'dev'], default: 'dev', verbose: false})
+const browserSync = require('browser-sync').create()
 
+// Paths
+const paths = {
+    html: {
+        src: 'app/pages/*.{html,php}',
+        dest: 'dist/',
+        watch: 'app/pages/**/*.{html,php}'
+    },
+    styles: {
+        src: 'app/scss/**/*.scss',
+        dest: 'dist/css/',
+        watch: 'app/scss/**/*.scss'
+    },
+    scripts: {
+        src: [
+            'node_modules/jquery/dist/jquery.js',
+            'node_modules/swiper/swiper-bundle.js',
+            'app/js/main.js'
+        ],
+        dest: 'dist/js/',
+        watch: 'app/js/*.js'
+    },
+    images: {
+        src: 'app/images/*.{jpg,jpeg,gif,png,svg}',
+        dest: 'dist/images/',
+        build: 'dist/images/*.{jpg,jpeg,gif,png,svg}'
+    },
+    symbols: {
+        src: 'app/symbols/*.svg',
+        dest: 'dist/images/'
+    }
+}
 
-// ========== HTML ==========
-const html = () => {
-    panini.refresh()
-    return src('app/pages/*.html', { base: 'app/pages/' })
-        .pipe(plumber())
+// gulp clean
+function clean() {
+    return del(['dist'])
+}
+
+// gulp html
+function html() {
+    return gulp.src(paths.html.src)
         .pipe(panini({
-            root:     'app/',
+            root:     'app/pages/',
             layouts:  'app/pages/layouts/',
             partials: 'app/pages/partials/',
             helpers:  'app/pages/helpers/',
             data:     'app/pages/data/'
         }))
-        .pipe(plumber.stop())
-        .pipe(dest('dist/'))
+        .pipe(dest(paths.html.dest))
         .pipe(browserSync.stream())
 }
 
-// ========== Styles ==========
-const styles = () => {
-    return src('app/scss/**/*.scss')
-        .pipe(plumber())
+// gulp styles
+function styles() {
+    return gulp.src(paths.styles.src)
         .pipe(mode.dev(sourcemaps.init()))
-        .pipe(sass.sync({
-            outputStyle: 'compressed'
-        }).on('error', sass.logError))
+        .pipe(sassGlob())
+        .pipe(sass.sync({outputStyle: 'compressed'}).on('error', sass.logError))
         .pipe(autoprefixer({
-            overrideBrowserslist: ['last 10 versions'],
-            cascade: false
+            overrideBrowserslist: ['last 8 versions'],
+            cascade: false,
+            grid: true
         }))
         .pipe(mode.dev(sourcemaps.write()))
-        .pipe(plumber.stop())
-        .pipe(dest('dist/css/'))
-        .pipe(browserSync.stream())
+        .pipe(dest(paths.styles.dest))
 }
 
-// ========== Scripts ==========
-const scripts = () => {
-    return src([
-        'node_modules/jquery/dist/jquery.js',
-        'node_modules/swiper/swiper-bundle.js',
-        'app/js/main.js',
-    ])
-        .pipe(plumber())
+// gulp scripts
+function scripts() {
+    return gulp.src(paths.scripts.src, { sourcemaps: true })
         .pipe(mode.dev(sourcemaps.init()))
         .pipe(babel({
             presets: ['@babel/env']
@@ -74,29 +94,16 @@ const scripts = () => {
         .pipe(concat('main.js'))
         .pipe(uglify())
         .pipe(mode.dev(sourcemaps.write()))
-        .pipe(plumber.stop())
-        .pipe(dest('dist/js/'))
-        .pipe(browserSync.stream())
+        .pipe(dest(paths.scripts.dest))
 }
 
-// ========== Images ==========
-const images = () => {
-    return src('app/images/**/*.{png,jpg,jpeg,gif}')
-        .pipe(imagemin())
-        /*
+// images
+function images() {
+    return gulp.src(paths.images.src)
         .pipe(imagemin([
             imagemin.optipng({ optimizationLevel: 5 }),
             imagemin.mozjpeg({ quality: 75, progressive: true }),
             imagemin.gifsicle({ interlaced: true }),
-        ]))
-        */
-        .pipe(dest('dist/images/'))
-        .pipe(browserSync.stream())
-}
-// https://github.com/svg/svgo#built-in-plugins
-const svg = () => {
-    return src('app/images/*.svg','!app/images/svg/*')
-        .pipe(imagemin([
             imagemin.svgo({
                 plugins: [
                     { removeViewBox: false },
@@ -106,11 +113,13 @@ const svg = () => {
                 ]
             })
         ]))
-        .pipe(dest('dist/images/'))
+        .pipe(dest(paths.images.dest))
         .pipe(browserSync.stream())
 }
-const sprite = () => {
-    return src('app/images/symbols/*.svg')
+
+// svg symbols
+function symbols() {
+    return gulp.src(paths.symbols.src)
         .pipe(imagemin([
             imagemin.svgo({
                 plugins: [
@@ -125,75 +134,47 @@ const sprite = () => {
             id: '%f',
             templates: ['default-svg']
         }))
-        .pipe(dest('dist/images/'))
-        .pipe(browserSync.stream())
-}
-const webp = () => {
-    return src('app/images/**/*.{jpg,jpeg,png}')
-        .pipe(WEBP())
-        .pipe(dest('dist/images/'))
+        .pipe(dest(paths.symbols.dest))
         .pipe(browserSync.stream())
 }
 
-// ========== Fonts ==========
-const fonts = () => {
-    return src('app/fonts/**/*.*')
-        .pipe(dest('dist/fonts/'))
-        .pipe(browserSync.stream())
+// panini
+function resetPages(done) {
+    panini.refresh()
+    done()
 }
 
-// ========== Sitemap ==========
-const sitemap = () => {
-    return src('dist/*.html', {
-        read: false
-    })
-        .pipe(SITEMAP({
-            siteUrl: 'www.example.com',
-            changefreq: 'weekly'
-        }))
-        .pipe(dest('dist'))
-}
-
-// ========== Clean Build ==========
-const clean = (cb) => {
-    del([
-        './*.html',
-        './dist/*',
-        './dist'
-    ])
-    return cache.clearAll(cb)
-}
-
-// ========== BrowserSync ==========
-const watchFiles = () => {
+// watch
+function watch(done) {
     browserSync.init({
-        server: { baseDir: ['dist/', './'] },
+        server: {
+            baseDir: ['dist/', './']
+        },
         notify: false,
         online: false,
     })
+    // html
+    gulp.watch('app/{pages,layouts,partials}/**/*.{html,php}').on('change', gulp.series(resetPages, html, browserSync.reload))
+    gulp.watch('app/pages/data/**/*.{js,json,yml}').on('change', gulp.series(resetPages, html, browserSync.reload))
+    gulp.watch('app/pages/helpers/**/*.js').on('change', gulp.series(resetPages, html, browserSync.reload))
+    // styles
+    gulp.watch(paths.styles.watch).on('change', gulp.parallel(styles, browserSync.reload))
+    // scripts
+    gulp.watch(paths.scripts.watch).on('change', gulp.parallel(scripts, browserSync.reload))
+    // images
+    gulp.watch(['app/images/*.{jpg,jpeg,gif,png,svg}', 'dist/images/*.{jpg,jpeg,gif,png,svg}'], images)
+    done()
 }
 
-// ========== Watch ==========
-watch(['app/pages/**/*.html','dist/*.html'], html)
-watch(['app/scss/**/*.scss','dist/css/**/*'], styles)
-watch(['app/js/*.js','dist/js/**/*'], scripts)
-watch('app/fonts/**/*', fonts)
-watch('app/images/**/*.{png,jpg,jpeg,gif}', images)
-watch('app/images/**/*.svg', svg)
-watch('app/images/symbols/*.svg', sprite)
-watch('app/images/**/*.webp', webp)
+var build = gulp.series(clean, images, symbols, gulp.parallel(html, styles, scripts), watch)
 
-// ========== Exports ==========
-exports.watchFiles = watchFiles
-exports.styles  = styles
-exports.scipts  = scripts
-exports.html    = html
-exports.fonts   = fonts
-exports.images  = images
-exports.svg     = svg
-exports.sprite  = sprite
-exports.webp    = webp
-exports.sitemap = sitemap
-exports.clean   = clean
+// Exports
+exports.clean = clean
+exports.html = html
+exports.styles = styles
+exports.scripts = scripts
+exports.images = images
+exports.symbols = symbols
+exports.build = build
 
-exports.default = series(clean, parallel(html, styles, scripts, fonts, images, svg, sprite), watchFiles)
+exports.default = build

@@ -1,27 +1,27 @@
-// Nav
-// const mq = window.matchMedia( "(max-width: 767.98px)" );
-// const navWrap = document.querySelector('.navigation__wrap');
-// const btnNav = document.querySelector('#navMenu');
-//
-// if (mq.matches) {
-//     // alert("window width >= 960px");
-//     navWrap.style.display = "none";
-// } else {
-//     // alert("window width < 960px");
-//     navWrap.style.display = "block";
-// }
-//
-// btnNav.onclick = function () {
-//     if (navWrap.style.display !== "none") {
-//         navWrap.style.display = "none";
-//     } else {
-//         navWrap.style.display = "block";
-//     }
-// }
+/**
+ * Sergei Česnakas
+ * https://www.cesnakas.com
+ */
 
+// Navigation
 $('#navMenu').click( function() {
     $('.navigation__wrap').toggle();
 });
+
+// Resize
+if ($(window).width() >= 768) {
+    $('.navigation__wrap').css('display','contents');
+} else {
+    $('.navigation__wrap').css('display','none');
+}
+$(window).on('resize', resizeNavbar);
+function resizeNavbar() {
+    if ($(window).width() >= 768) {
+        $('.navigation__wrap').css('display','contents');
+    } else {
+        $('.navigation__wrap').css('display','none');
+    }
+}
 
 // Slider
 const swiper = new Swiper ('.swiper', {
