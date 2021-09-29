@@ -5,13 +5,17 @@
 
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@100;200;300;400;500;600;700;800;900&display=swap');
 
+// Bootstrap
+@import "bootstrap/variables"; // Custom
+@import "node_modules/bootstrap/scss/bootstrap-reboot";
+@import "bootstrap/reboot"; // Custom
+@import "node_modules/bootstrap/scss/bootstrap-grid";
+
 // Swiper
 @import "node_modules/swiper/swiper-bundle";
 @import "swiper";
 
 // Main
-@import "reboot";
-@import "grid";
 @import "forms";
 @import "nav";
 @import "filter";

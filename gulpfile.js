@@ -1,16 +1,14 @@
 // 'use strict'
-const {src, dest, parallel} = require('gulp')
+const {src, dest, lastRun, parallel} = require('gulp')
 const gulp = require('gulp')
 const del = require('del')
+const cache = require('gulp-cache')
 const panini = require('panini')
-
 const sass = require('gulp-sass')(require('sass'))
 const sassGlob = require('gulp-sass-glob')
-
 const babel = require('gulp-babel')
 const concat = require('gulp-concat')
 const uglify = require('gulp-uglify')
-
 const imagemin = require('gulp-imagemin')
 const svgSymbols =require('gulp-svg-symbols')
 const autoprefixer = require('gulp-autoprefixer')
@@ -18,7 +16,9 @@ const sourcemaps = require('gulp-sourcemaps')
 const mode = require('gulp-mode')({modes: ['prod', 'dev'], default: 'dev', verbose: false})
 const browserSync = require('browser-sync').create()
 
-// Paths
+/**
+ * ### Paths ###
+ */
 const paths = {
     html: {
         src: 'app/pages/*.{html,php}',
@@ -26,36 +26,50 @@ const paths = {
         watch: 'app/pages/**/*.{html,php}'
     },
     styles: {
-        src: 'app/scss/**/*.scss',
+        src: 'app/styles/**/*.scss',
         dest: 'dist/css/',
-        watch: 'app/scss/**/*.scss'
+        watch: 'app/styles/**/*.{css,scss}'
     },
     scripts: {
         src: [
             'node_modules/jquery/dist/jquery.js',
+            'node_modules/bootstrap/dist/js/bootstrap.bundle.js',
             'node_modules/swiper/swiper-bundle.js',
-            'app/js/main.js'
+            'app/scripts/main.js'
         ],
         dest: 'dist/js/',
-        watch: 'app/js/*.js'
+        watch: 'app/scripts/**/*.js'
     },
     images: {
-        src: 'app/images/*.{jpg,jpeg,gif,png,svg}',
+        src: 'app/images/**/*.{jpg,jpeg,gif,png,svg}',
         dest: 'dist/images/',
-        build: 'dist/images/*.{jpg,jpeg,gif,png,svg}'
+        watch: 'app/images/**/*.{jpg,jpeg,gif,png,svg}'
     },
     symbols: {
-        src: 'app/symbols/*.svg',
-        dest: 'dist/images/'
+        src: 'app/svg/*.svg',
+        dest: 'dist/images/',
+        watch: 'app/svg/*.svg'
+    },
+    fonts: {
+        src: 'app/fonts/**/*',
+        dest: 'dist/fonts/',
+        watch: 'app/fonts/**/*'
     }
 }
 
-// gulp clean
+/**
+ * ### CLEAN ###
+ * Clean & delete 'dist' directory
+ */
 function clean() {
     return del(['dist'])
 }
+exports.clean = clean
 
-// gulp html
+/**
+ * ### HTML ###
+ * Building HTML using Panini
+ */
 function html() {
     return gulp.src(paths.html.src)
         .pipe(panini({
@@ -67,6 +81,13 @@ function html() {
         }))
         .pipe(dest(paths.html.dest))
         .pipe(browserSync.stream())
+}
+exports.html = html
+
+// Panini refresh
+function resetPages(done) {
+    panini.refresh()
+    done()
 }
 
 // gulp styles
@@ -83,6 +104,7 @@ function styles() {
         .pipe(mode.dev(sourcemaps.write()))
         .pipe(dest(paths.styles.dest))
 }
+exports.styles = styles
 
 // gulp scripts
 function scripts() {
@@ -96,11 +118,12 @@ function scripts() {
         .pipe(mode.dev(sourcemaps.write()))
         .pipe(dest(paths.scripts.dest))
 }
+exports.scripts = scripts
 
 // images
 function images() {
-    return gulp.src(paths.images.src)
-        .pipe(imagemin([
+    return gulp.src(paths.images.src, { since: lastRun(images) })
+        .pipe(cache(imagemin([
             imagemin.optipng({ optimizationLevel: 5 }),
             imagemin.mozjpeg({ quality: 75, progressive: true }),
             imagemin.gifsicle({ interlaced: true }),
@@ -112,15 +135,16 @@ function images() {
                     { removeDimensions: true }
                 ]
             })
-        ]))
+        ])))
         .pipe(dest(paths.images.dest))
         .pipe(browserSync.stream())
 }
+exports.images = images
 
 // svg symbols
 function symbols() {
-    return gulp.src(paths.symbols.src)
-        .pipe(imagemin([
+    return gulp.src(paths.symbols.src, { since: lastRun(symbols) })
+        .pipe(cache(imagemin([
             imagemin.svgo({
                 plugins: [
                     { removeViewBox: false },
@@ -129,7 +153,7 @@ function symbols() {
                     { removeDimensions: true }
                 ]
             })
-        ]))
+        ])))
         .pipe(svgSymbols({
             id: '%f',
             templates: ['default-svg']
@@ -137,12 +161,22 @@ function symbols() {
         .pipe(dest(paths.symbols.dest))
         .pipe(browserSync.stream())
 }
+exports.symbols = symbols
 
-// panini
-function resetPages(done) {
-    panini.refresh()
+// Clean Cache
+function cleanCache(done) {
+    cache.clearAll()
     done()
 }
+exports.cleanCache = cleanCache
+
+// fonts
+function fonts() {
+    return gulp.src(paths.fonts.src)
+        .pipe(dest(paths.fonts.dest))
+        .pipe(browserSync.stream())
+}
+exports.fonts = fonts
 
 // watch
 function watch(done) {
@@ -162,19 +196,12 @@ function watch(done) {
     // scripts
     gulp.watch(paths.scripts.watch).on('change', gulp.parallel(scripts, browserSync.reload))
     // images
-    gulp.watch(['app/images/*.{jpg,jpeg,gif,png,svg}', 'dist/images/*.{jpg,jpeg,gif,png,svg}'], images)
+    gulp.watch(paths.images.watch).on('change', gulp.series(images, browserSync.reload))
+    gulp.watch(paths.symbols.watch).on('change', gulp.series(symbols, browserSync.reload))
     done()
 }
 
-var build = gulp.series(clean, images, symbols, gulp.parallel(html, styles, scripts), watch)
-
 // Exports
-exports.clean = clean
-exports.html = html
-exports.styles = styles
-exports.scripts = scripts
-exports.images = images
-exports.symbols = symbols
+const build = gulp.series(clean, images, symbols, fonts, gulp.parallel(html, styles, scripts), watch)
 exports.build = build
-
 exports.default = build
